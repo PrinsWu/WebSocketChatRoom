@@ -1,0 +1,18 @@
+spring:
+  logging:
+    level:
+      root: INFO
+      com.prins.chatroom: DEBUG
+  resources:
+    static-locations:
+      - file:./src/main/resources/static/
+      - classpath:/static/
+  thymeleaf:
+    cache: false
+#    prefix: classpath:/templates/
+    # cache=false + prefix=file  can refresh page automate
+    prefix: file:./src/main/resources/templates/
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    mode: HTML5
