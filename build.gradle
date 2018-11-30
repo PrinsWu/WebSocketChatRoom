@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.1.0.RELEASE'
+        lombokVersion = "1.18.4"
     }
     repositories {
         mavenCentral()
@@ -24,24 +25,18 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
-}
-
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-//    developmentOnly("org.springframework.boot:spring-boot-devtools")
-//    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
-//    runtimeOnly('com.h2database:h2')
-    compileOnly('org.projectlombok:lombok')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
+    
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.1'
 
 
