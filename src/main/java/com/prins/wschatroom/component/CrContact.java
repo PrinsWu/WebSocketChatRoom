@@ -5,9 +5,9 @@ package com.prins.wschatroom.component;
  * @version v1.0
  * @since v1.0 2018/11/26
  */
-public class MrContact {
+public class CrContact {
     private String status;
-    private String mrid;
+    private String crid;
     private String[] uids;
 
     public String getStatus() {
@@ -18,12 +18,12 @@ public class MrContact {
         this.status = status;
     }
 
-    public String getMrid() {
-        return mrid;
+    public String getCrid() {
+        return crid;
     }
 
-    public void setMrid(String mrid) {
-        this.mrid = mrid;
+    public void setCrid(String crid) {
+        this.crid = crid;
     }
 
     public String[] getUids() {

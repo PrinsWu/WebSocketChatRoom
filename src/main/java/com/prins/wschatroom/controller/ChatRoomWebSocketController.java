@@ -22,71 +22,71 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ChatRoomWebSocketController {
 
     @Autowired
-    MrMessageService mrMessageService;
+    CrMessageService crMessageService;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
     @MessageMapping("/connect")
-    @SendTo("/topic/mrcontact")
-    public MrContact connectWs(MrMessage mrMessage) throws MrAlertException {
-        String mrid = mrMessage.getMrid();
-        String uid = mrMessage.getSender();
-        mrMessageService.connectMeetingRoom(mrid, uid);
+    @SendTo("/topic/crcontact")
+    public CrContact connectWs(CrMessage crMessage) throws CrAlertException {
+        String mrid = crMessage.getCrid();
+        String uid = crMessage.getSender();
+        crMessageService.connectChatRoom(mrid, uid);
 
         //alert user join
-        MrAlert alert = mrMessageService.createMrAlert("info", String.format("User[%s] join talk!", uid));
+        CrAlert alert = crMessageService.createCrAlert("info", String.format("User[%s] join talk!", uid));
         messagingTemplate.convertAndSend("/topic/alert", alert);
         //message user join
-        mrMessage.setSender("sysinfo");
-        mrMessage.setMessage(uid + " join talk!");
-        mrMessage = mrMessageService.sendMrMessage(mrMessage);
-        messagingTemplate.convertAndSend("/topic/mrmessage", mrMessage);
+        crMessage.setSender("sysinfo");
+        crMessage.setMessage(uid + " join talk!");
+        crMessage = crMessageService.sendCrMessage(crMessage);
+        messagingTemplate.convertAndSend("/topic/crmessage", crMessage);
 
-        return mrMessageService.getAllContactByMrid(mrid);
+        return crMessageService.getAllContactByCrid(mrid);
     }
 
     @MessageMapping("/disconnect")
-    @SendTo("/topic/mrcontact")
-    public MrContact disconnectWs(MrMessage mrMessage) throws MrAlertException {
-        String mrid = mrMessage.getMrid();
-        String uid = mrMessage.getSender();
-        mrMessageService.disconnectMeetingRoom(mrid, uid);
+    @SendTo("/topic/crcontact")
+    public CrContact disconnectWs(CrMessage crMessage) throws CrAlertException {
+        String mrid = crMessage.getCrid();
+        String uid = crMessage.getSender();
+        crMessageService.disconnectChatRoom(mrid, uid);
 
         //alert user exit
-        MrAlert alert = mrMessageService.createMrAlert("warning", String.format("User[%s] exit talk!", uid));
+        CrAlert alert = crMessageService.createCrAlert("warning", String.format("User[%s] exit talk!", uid));
         messagingTemplate.convertAndSend("/topic/alert", alert);
 
         //message user exit
-        mrMessage.setSender("sysdanger");
-        mrMessage.setMessage(uid + " exit talk!");
-        mrMessage = mrMessageService.sendMrMessage(mrMessage);
-        messagingTemplate.convertAndSend("/topic/mrmessage", mrMessage);
+        crMessage.setSender("sysdanger");
+        crMessage.setMessage(uid + " exit talk!");
+        crMessage = crMessageService.sendCrMessage(crMessage);
+        messagingTemplate.convertAndSend("/topic/crmessage", crMessage);
 
-        return mrMessageService.getAllContactByMrid(mrid);
+        return crMessageService.getAllContactByCrid(mrid);
     }
 
-    @MessageMapping("/sendMrMessage")
-    @SendTo("/topic/mrmessage")
-    public MrMessage[] sendMrMessage(MrMessage mrMessage) throws MrAlertException {
-        return new MrMessage[] {mrMessageService.sendMrMessage(mrMessage)};
+    @MessageMapping("/sendCrMessage")
+    @SendTo("/topic/crmessage")
+    public CrMessage[] sendMrMessage(CrMessage crMessage) throws CrAlertException {
+        return new CrMessage[] {crMessageService.sendCrMessage(crMessage)};
     }
 
     @MessageExceptionHandler
     @SendTo("/topic/alert")
-    public MrAlert handleException(Throwable exception) {
-        return ((MrAlertException)exception).getMrAlert();
+    public CrAlert handleException(Throwable exception) {
+        return ((CrAlertException)exception).getCrAlert();
     }
 
     @GetMapping(value = "/chatroom")
     public String viewDefaultMeetingRoomPage(Model model) {
-        model.addAttribute("mrid", mrMessageService.getDefaultMrid());
+        model.addAttribute("crid", crMessageService.getDefaultCrid());
         return "chatroom";
     }
 
-    @GetMapping(value = "/chatroom/{mrid}")
-    public String viewMeetingRoomPage(Model model, @PathVariable("mrid") String mrid) {
-        model.addAttribute("mrid", mrid);
+    @GetMapping(value = "/chatroom/{crid}")
+    public String viewMeetingRoomPage(Model model, @PathVariable("crid") String crid) {
+        model.addAttribute("crid", crid);
         return "chatroom";
     }
 }

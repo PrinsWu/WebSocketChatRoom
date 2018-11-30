@@ -5,7 +5,7 @@ package com.prins.wschatroom.component;
  * @version v1.0
  * @since v1.0 2018/11/28
  */
-public class MrAlert {
+public class CrAlert {
     private String type;
     private String message;
     private String alertSender;

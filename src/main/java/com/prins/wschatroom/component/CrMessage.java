@@ -5,9 +5,9 @@ package com.prins.wschatroom.component;
  * @version v1.0
  * @since v1.0 2018/11/26
  */
-public class MrMessage {
+public class CrMessage {
     private String status;
-    private String mrid;
+    private String crid;
     private String sender;
     private String sendTime;
     private String message;
@@ -20,12 +20,12 @@ public class MrMessage {
         this.status = status;
     }
 
-    public String getMrid() {
-        return mrid;
+    public String getCrid() {
+        return crid;
     }
 
-    public void setMrid(String mrid) {
-        this.mrid = mrid;
+    public void setCrid(String crid) {
+        this.crid = crid;
     }
 
     public String getSender() {

@@ -1,6 +1,6 @@
 
-function getMrid() {
-  return $("#mrid").text();
+function getCrid() {
+  return $("#crid").text();
 }
 
 function getUid() {
@@ -17,16 +17,16 @@ function connectWebSocket() {
     isConnected = !isConnected;
     if (isConnected) {
         $("#btnConnect").text("Disconnect");
-        var socket = new SockJS('/websocket-mr');
+        var socket = new SockJS('/websocket-cr');
         stompClient = Stomp.over(socket);
         stompClient.connect({"uid": getUid()}, function(frame) {
 //            console.log('Connected: ' + frame);
             // subscribe 3 topics
-            stompClient.subscribe('/topic/mrcontact', function(respnose) {
+            stompClient.subscribe('/topic/crcontact', function(respnose) {
                 displayContacts(JSON.parse(respnose.body));
             });
-            stompClient.subscribe('/topic/mrmessage', function(respnose) {
-                displayAppendMrMessage(JSON.parse(respnose.body));
+            stompClient.subscribe('/topic/crmessage', function(respnose) {
+                displayAppendCrMessage(JSON.parse(respnose.body));
             });
             stompClient.subscribe('/topic/alert', function(respnose) {
                 displayAlert(JSON.parse(respnose.body));
@@ -46,12 +46,12 @@ function connectWebSocket() {
     console.log("connectWebSocket:" + isConnected);
 }
 
-function displayContacts(mrContact) {
+function displayContacts(crContact) {
 //  console.log("displayContacts ...");
   var contactlist = $("#contactlist");
   contactlist.children().remove();
-  if (mrContact) {
-    mrContact.uids.forEach(function(uid) {
+  if (crContact) {
+    crContact.uids.forEach(function(uid) {
       var msgItem = $("<li/>").addClass("list-group-item")
           .text(uid)
           .appendTo(contactlist);
@@ -59,7 +59,7 @@ function displayContacts(mrContact) {
   }
 }
 
-function appendMrMessage(messagelist, msg) {
+function appendCrMessage(messagelist, msg) {
   var msgItem = $("<li/>").addClass("list-group-item")
       .appendTo(messagelist);
   if (msg.sender == getUid()) {
@@ -77,36 +77,28 @@ function appendMrMessage(messagelist, msg) {
 //  console.log((msg.sender == getUid()) + "-" + (msg.sender == "sysinfo") + "-" + (msg.sender == "sysdanger"));
 }
 
-function displayAppendMrMessage(mrMessages) {
+function displayAppendCrMessage(crMessages) {
   var messagelist = $("#messagelist");
-//  console.log(mrMessages);
-  if (mrMessages) {
-    if (Array.isArray(mrMessages)) {
-      mrMessages.forEach(function(msg) {
-        appendMrMessage(messagelist, msg);
-//        }
+  if (crMessages) {
+    if (Array.isArray(crMessages)) {
+      crMessages.forEach(function(msg) {
+        appendCrMessage(messagelist, msg);
       });
     } else {
-      appendMrMessage(messagelist, mrMessages);
+      appendCrMessage(messagelist, crMessages);
     }
   }
   // let scroll to last one
   $('ul#messagelist li:last').get(0).scrollIntoView();
-//  console.log("-------------");
-//  console.log($('ul#messagelist li:last').position().top);
-//  $("#messagelistScroll").animate({scrollTop: $('ul#messagelist li:last').position().top - 30}, "slow");
-//  messagelist.animate({scrollTop: $('ul#messagelist li:last').position().top - 30}, "slow");
-//  $('html, body').animate({scrollTop: $('ul#messagelist li:last').position().top - 30}, "slow");
-//  messagelist.scrollTo("*:last", 0);
 }
 
-function displayAlert(mrAlert) {
-  if (mrAlert) {
+function displayAlert(crAlert) {
+  if (crAlert) {
     var alertdiv = $("#_alertdiv").clone();
     $("body").prepend(alertdiv);
     alertdiv.attr("id", "alertdiv");
-    alertdiv.find(".alert-msg").empty().text(mrAlert.message);
-    alertdiv.removeClass("alert-info alert-warning d-none").addClass("alert-" + mrAlert.type).addClass("d-block");
+    alertdiv.find(".alert-msg").empty().text(crAlert.message);
+    alertdiv.removeClass("alert-info alert-warning d-none").addClass("alert-" + crAlert.type).addClass("d-block");
   }
 }
 
@@ -115,52 +107,52 @@ function closeAlert(btn) {
   alertdiv.removeClass("d-block").addClass("d-none");
 }
 
-function createMrMessage(message) {
-  var mrid = getMrid();
+function createCrMessage(message) {
+  var crid = getCrid();
   var uid = getUid();
-  var mrMessage = {
+  var crMessage = {
     "status" : "",
-    "mrid" : mrid,
+    "crid" : crid,
     "sender" : uid,
     "sendTime" : "",
     "message" : message
 
   }
-  return mrMessage;
+  return crMessage;
 }
 
 function connectWs() {
   console.log("connectWs...");
-  var mrMessage = createMrMessage();
-  stompClient.send("/ws/v1/connect", {}, JSON.stringify(mrMessage));
+  var crMessage = createCrMessage();
+  stompClient.send("/ws/v1/connect", {}, JSON.stringify(crMessage));
 }
 
 function disconnectWs() {
   console.log("disconnectWs...");
-  var mrMessage = createMrMessage();
-  stompClient.send("/ws/v1/disconnect", {}, JSON.stringify(mrMessage));
+  var crMessage = createCrMessage();
+  stompClient.send("/ws/v1/disconnect", {}, JSON.stringify(crMessage));
   displayContacts();
 }
 
-function sendMrMessage() {
-  console.log("sendMrMessage...");
+function sendCrMessage() {
+//  console.log("sendCrMessage...");
   var uid = getUid();
   var messageBox = $("#messageBox");
   var message = messageBox.val();
   messageBox.empty();
   console.log(uid + ":" + message);
-  var mrMessage = createMrMessage(message);
+  var crMessage = createCrMessage(message);
   //如果直接傳到被subscript的topic的話，會收到一個JSON object
   //但如果分成一個送、一個收的話，後端還可以處理message然後再透過@SendTo，
   //這種方式有可能做到把訊息彙總後一次publish多筆message到topic
-  stompClient.send("/ws/v1/sendMrMessage", {}, JSON.stringify(mrMessage));
-//  stompClient.send("/topic/mrmessage", {}, JSON.stringify(mrMessage));
+  stompClient.send("/ws/v1/sendCrMessage", {}, JSON.stringify(crMessage));
+//  stompClient.send("/topic/crmessage", {}, JSON.stringify(crMessage));
 }
 
 
 function initButtons() {
   $("#btnConnect").on("click", connectWebSocket);
-  $("#btnSend").on("click", sendMrMessage);
+  $("#btnSend").on("click", sendCrMessage);
   console.log("initButtons...");
 }
 $( document ).ready(initButtons);
