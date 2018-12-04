@@ -2,7 +2,7 @@
 這個專案用來建立一個多人線上聊天室，主要用來練習WebSocket的開發。使用SpringBoot做為開發架構，gradle做為編譯、執行工具。
 
 ### Install
-> 1. git clone https://github.com/PrinsWu/WebSocketChatRoom.git
+> 1. `git clone https://github.com/PrinsWu/WebSocketChatRoom.git`
 > 2. install java 8
 
 ### Run
@@ -28,4 +28,7 @@
 
 ### Document
 詳細安裝與程式說明
-[!document](https://medium.com/@prinswu/web-chat-room-by-websocket-springboot-4868e6a506ce)
+[Web Chat Room by WebSocket & SpringBoot][medium_doc]
+
+[github]:https://github.com/PrinsWu/WebSocketChatRoom.git
+[medium_doc]:https://medium.com/@prinswu/web-chat-room-by-websocket-springboot-4868e6a506ce
